@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <title>Gridcycle - EV Bike Rentals</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+      <link rel="stylesheet" href="assets/css/style.css"/>
+      <link rel="icon" href="assets/img/favico.ico" />
+   </head>
+   <body>
+      <nav id="navbar">
+         <div class="nav-wrapper">
+            <div class="logo">
+               <a href="index.html"><img src="assets/img/logo.png" alt="Logo" /></a>
+            </div>
+            <div class="nav-content-right">
+               <ul id="menu">
+                  <li><a href="index.html" class="active">Home</a></li>
+                  <li><a href="about.html">About</a></li>
+                  <li><a href="booking.html">Booking</a></li>
+                  <li><a href="contact.html">Contact</a></li>
+                  <div class="mobile-nav-buttons">
+                     <button class="nav-btn cart-btn" id="cartButton">
+                     <img src="assets/img/icons/cart.png" alt="Cart" class="btn-icon" />
+                     <span>Cart</span>
+                     <span class="cart-count" id="cartCount">0</span>
+                     </button>
+                     <button class="nav-btn login-btn" id="loginButton">
+                     <img src="assets/img/icons/user.png" alt="Login" class="btn-icon" />
+                     <span>Login</span>
+                     </button>
+                  </div>
+               </ul>
+               <div class="nav-buttons">
+                  <button class="nav-btn cart-btn" id="cartButton">
+                  <img src="assets/img/icons/cart.png" alt="Cart" class="btn-icon" />
+                  <span>Cart</span>
+                  <span class="cart-count" id="cartCount">0</span>
+                  </button>
+                  <button class="nav-btn login-btn" id="loginButton">
+                  <img src="assets/img/icons/user.png" alt="Login" class="btn-icon" />
+                  <span>Login</span>
+                  </button>
+               </div>
+               <div id="hamburger">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </div>
+            </div>
+         </div>
+      </nav>
+      <div class="toast-container" id="toastContainer"></div>
+      <section class="hero-section first-hero">
+         <div class="hero-container">
+            <div class="hero-image">
+               <img src="assets/img/cyle-m.png" alt="Electric Cycle" />
+            </div>
+            <div class="hero-text">
+               <h1 class="heading">
+                  Rent an EV Cycle at Gridcycle, Go Green, and Explore!
+               </h1>
+               <p class="lead">
+                  Join us in making a positive impact on the planet while enjoying a
+                  smooth, fun ride. Our electric cycles are designed to provide an
+                  eco-friendly alternative to traditional transportation.
+               </p>
+               <div class="button-group">
+                  <button class="btn primary-btn" id="openBookingModal">
+                  <img
+                     src="assets/img/icons/reserved.png"
+                     alt="Booking"
+                     class="btn-icon-large"
+                     />
+                  <span>Booking</span>
+                  </button>
+                  <button class="btn secondary-btn">
+                  <img
+                     src="assets/img/icons/call-center.png"
+                     alt="Contact"
+                     class="btn-icon-large"
+                     />
+                  <span>Contact Us</span>
+                  </button>
+               </div>
+            </div>
+         </div>
+      </section>
+      <section class="hero-section how-it-works">
+         <div class="hero-container">
+            <div class="hero-image">
+               <img src="assets/img/how-it-works.png" alt="How It Works" />
+            </div>
+            <div class="hero-text">
+               <h1 class="heading">How It Works</h1>
+               <p class="subtext">Here at GridCycle, we put convenience first. With us, it is both easy and effortless to
+                  rent an electric cycle for travel within the city, commuting or leisurely rides.
+               </p>
+               <ul class="features-list">
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Pick the Right Cycle for You</h3>
+                        <p class="feature-desc">
+                           Head over to our website and navigate through
+                           our inventory of electric cycles via book now page. Our collection contains
+                           multiple models, so whether you want a fast riding e-bike for long journeys, or
+                           a Cruiser City Bike for a short trip around the city, we have it all. Based on your
+                           bicycling preferences, select the cycle which you deem most appropriate.
+                        </p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Select the Rental Date & Time</h3>
+                        <p class="feature-desc">After choosing your cycle, it's time to check
+                           what rental period would suit you best. To make it as convenient as possible,
+                           we also cater to flexible rental durations, so feel free to select anywhere from
+                           a couple of hours to a full day, or longer.
+                        </p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Reserve a Cycle</h3>
+                        <p class="feature-desc">Now that you have made a selection on the cycle and rental
+                           duration, it's time to book the ride. We guarantee that it will take you just a
+                           couple of clicks.It is time to go on the road. As long as the battery is fully
+                           charged , you are good to go.
+                        </p>
+                     </div>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </section>
+      <section class="hero-section why-choose">
+         <div class="hero-container">
+            <div class="hero-image">
+               <img src="assets/img/why-choose.png" alt="Why Choose GridCycle" />
+            </div>
+            <div class="hero-text">
+               <h1 class="heading">Why Choose GridCycle?</h1>
+               <p class="subtext">
+                  GridCycle is not just any electric cycle rental service; we are your partner in eco-
+                  friendly transportation solutions.
+               </p>
+               <ul class="features-list">
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Unmatched Convenience</h3>
+                        <p class="feature-desc">Renting an electric cycle is made so simple with us.
+                           You can find, select, and book your ride with just a few clicks on our
+                           comprehensive website. Be it a quick escape or an extended vacation, you will
+                           always appreciate our seamless booking system designed for speed and ease.
+                        </p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Premium E-Bikes</h3>
+                        <p class="feature-desc">GridCycle offers a range of high-quality electric cycles, catering to diverse client needs. With meticulous maintenance, they ensure smooth, safe journeys, offering both speedy and comfortable models for long-distance and city rides.</p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Flexible Plans</h3>
+                        <p class="feature-desc">We offer flexible rental durations, catering to various customer needs, including multi-day and hourly rentals, with reasonable rates for short or long cycles.</p>
+                     </div>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </section>
+      <section class="hero-section who-we-are">
+         <div class="hero-container">
+            <div class="hero-image">
+               <img src="assets/img/who-we-are.png" alt="Who We Are" />
+            </div>
+            <div class="hero-text">
+               <h1 class="heading">Who We Are</h1>
+               <p class="subtext">
+                  We provide eco-friendly electric cycle rentals for convenient,
+                  affordable transportation. Our goal is to make cycling accessible
+                  while promoting a greener, healthier Earth.
+               </p>
+               <ul class="features-list">
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Sustainable Transport</h3>
+                        <p class="feature-desc">We actively try to reduce carbon footprints by offering electric cycles instead of cars, which are more eco-friendly.</p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Easy Booking</h3>
+                        <p class="feature-desc">Through our user-friendly website, renting a cycle can take as little as a few clicks, all the while allowing for flexible durations and pickup or delivery bookings.</p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Quality Bikes</h3>
+                        <p class="feature-desc">With our top of the line, well maintained electric bikes, you are guaranteed a smooth and safe ride every single time.</p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Transparent Pricing</h3>
+                        <p class="feature-desc">Putting the environment at the forefront, we do not charge competitive prices with many hidden fees.</p>
+                     </div>
+                  </li>
+                  <li class="feature-item">
+                     <div class="feature-bullet"></div>
+                     <div class="feature-content">
+                        <h3 class="feature-title">Great Support</h3>
+                        <p class="feature-desc">Our friendly team works to make your journey as seamless as possible every step of the way, assisting you however we can.</p>
+                     </div>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </section>
+      <section class="products-section">
+         <div class="section-header">
+            <h2>Recommended Products</h2>
+         </div>
+         <div class="products-container">
+            <div class="product-card">
+               <div class="product-image">
+                  <img src="assets/img/products/product-1.png" alt="Gridcycle Pro" />
+               </div>
+               <h3 class="product-name">Gridcycle Pro</h3>
+               <ul class="product-features">
+                  <li>40km range</li>
+                  <li>3 hour charge</li>
+                  <li>Smart display</li>
+               </ul>
+               <button
+                  class="btn primary-btn product-btn book-now-btn"
+                  data-product="Gridcycle Pro"
+                  data-price="15"
+                  >
+               Book Now
+               </button>
+            </div>
+            <div class="product-card">
+               <div class="product-image">
+                  <img src="assets/img/products/product-2.png" alt="Gridcycle Lite" />
+               </div>
+               <h3 class="product-name">Gridcycle Lite</h3>
+               <ul class="product-features">
+                  <li>30km range</li>
+                  <li>2.5 hour charge</li>
+                  <li>Lightweight frame</li>
+               </ul>
+               <button
+                  class="btn primary-btn product-btn book-now-btn"
+                  data-product="Gridcycle Lite"
+                  data-price="12"
+                  >
+               Book Now
+               </button>
+            </div>
+            <div class="product-card">
+               <div class="product-image">
+                  <img src="assets/img/products/product-3.png" alt="Gridcycle Tour" />
+               </div>
+               <h3 class="product-name">Gridcycle Tour</h3>
+               <ul class="product-features">
+                  <li>50km range</li>
+                  <li>4 hour charge</li>
+                  <li>Comfort seat</li>
+               </ul>
+               <button
+                  class="btn primary-btn product-btn book-now-btn"
+                  data-product="Gridcycle Tour"
+                  data-price="18"
+                  >
+               Book Now
+               </button>
+            </div>
+         </div>
+      </section>
+      <section class="cta-section">
+         <div class="cta-container">
+            <div class="cta-card">
+               <h2 class="cta-heading">Try Gridcycle's EV Ride Today</h2>
+               <p class="cta-text">
+                  Experience the future of transportation with Gridcycle's electric cycles. Enjoy a smooth, eco-friendly ride and discover the convenience of our rental services.
+               </p>
+               <div class="cta-buttons">
+                  <button class="btn cta-btn-white">
+                  <i class="fas fa-calendar-check"></i> Book Free Demo
+                  </button>
+                  <button class="btn cta-btn-green">
+                  <i class="fas fa-building"></i> Enterprise Solutions
+                  </button>
+               </div>
+            </div>
+         </div>
+      </section>
+      <footer class="footer">
+         <div class="footer-container">
+            <div class="footer-left">
+               <div class="footer-logo">
+                  <img src="assets/img/logo.png" alt="Gridcycle Logo" />
+               </div>
+               <p class="footer-tagline">Ride Green, Live Clean with GridCycle.</p>
+               <div class="footer-contact">
+                  <p>24, St George's Avenue, London, United Kindgom</p>
+                  <p>Call: +44 7553559944</p>
+                  <p>Email: info@gridcycle.com</p>
+               </div>
+            </div>
+            <div class="footer-right">
+               <div class="footer-sitemap">
+                  <h4>Quick Links</h4>
+                  <ul>
+                     <li><a href="index.html">Home</a></li>
+                     <li><a href="about.html">About</a></li>
+                     <li><a href="booking.html">Services</a></li>
+                     <li><a href="contact.html">Contact</a></li>
+                     <li><a href="cart.html">Cart</a></li>
+                     <li><a href="login.html">Login</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="footer-bottom">
+            <p>
+               &copy; 2025 Ayaz Momin - UEL. All rights reserved.
+            </p>
+            <p>Created By &#x2665; Mohmadayaz Momin</p>
+            </p>
+         </div>
+      </footer>
+      <div class="modal-overlay" id="bookingModal">
+         <div class="booking-modal">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="modal-header">
+               <h2>Book Your E-Bike</h2>
+            </div>
+            <div class="booking-steps">
+               <div class="step active" id="step1">
+                  <div class="step-number">1</div>
+                  <div class="step-title">Select Date</div>
+               </div>
+               <div class="step" id="step2">
+                  <div class="step-number">2</div>
+                  <div class="step-title">Select Time</div>
+               </div>
+               <div class="step" id="step3">
+                  <div class="step-number">3</div>
+                  <div class="step-title">Duration</div>
+               </div>
+               <div class="step" id="step4">
+                  <div class="step-number">4</div>
+                  <div class="step-title">Location</div>
+               </div>
+               <div class="step" id="step5">
+                  <div class="step-number">5</div>
+                  <div class="step-title">Review</div>
+               </div>
+            </div>
+            <div class="step-content active" id="dateSelection">
+               <div class="calendar-container">
+                  <div class="calendar-header">
+                     <h3 class="calendar-title" id="currentMonthYear">June 2023</h3>
+                     <div class="calendar-nav">
+                        <button id="prevMonth">&lt;</button>
+                        <button id="nextMonth">&gt;</button>
+                     </div>
+                  </div>
+                  <div class="calendar-grid" id="calendarDaysHeader">
+                     <div class="calendar-day-header">Sun</div>
+                     <div class="calendar-day-header">Mon</div>
+                     <div class="calendar-day-header">Tue</div>
+                     <div class="calendar-day-header">Wed</div>
+                     <div class="calendar-day-header">Thu</div>
+                     <div class="calendar-day-header">Fri</div>
+                     <div class="calendar-day-header">Sat</div>
+                  </div>
+                  <div class="calendar-grid" id="calendarDates"></div>
+               </div>
+               <div class="modal-actions">
+                  <button class="modal-btn back" disabled>Back</button>
+                  <button class="modal-btn next" id="toTimeSelection">Next</button>
+               </div>
+            </div>
+            <div class="step-content" id="timeSelection">
+               <div class="time-slots-container">
+                  <h3 class="time-slots-header">Select Time Slot</h3>
+                  <div class="time-slots-grid" id="timeSlots"></div>
+               </div>
+               <div class="modal-actions">
+                  <button class="modal-btn back" id="backToDateSelection">
+                  Back
+                  </button>
+                  <button class="modal-btn next" id="toDurationSelection">
+                  Next
+                  </button>
+               </div>
+            </div>
+            <div class="step-content" id="durationSelection">
+               <div class="duration-container">
+                  <h3 class="duration-header">Select Rental Duration</h3>
+                  <div class="duration-options">
+                     <div class="duration-option" data-hours="1">1 hour</div>
+                     <div class="duration-option" data-hours="2">2 hours</div>
+                     <div class="duration-option" data-hours="4">4 hours</div>
+                     <div class="duration-option" data-hours="8">8 hours</div>
+                     <div class="duration-option" data-hours="24">1 day</div>
+                     <div class="duration-option" data-hours="48">2 days</div>
+                     <div class="duration-option" data-hours="72">3 days</div>
+                     <div class="duration-option" data-hours="168">1 week</div>
+                  </div>
+               </div>
+               <div class="modal-actions">
+                  <button class="modal-btn back" id="backToTimeSelection">
+                  Back
+                  </button>
+                  <button class="modal-btn next" id="toLocationSelection">
+                  Next
+                  </button>
+               </div>
+            </div>
+            <div class="step-content" id="locationSelection">
+               <div class="location-container">
+                  <h3 class="location-header">Select Drop-off Location</h3>
+                  <input
+                     type="text"
+                     class="location-input"
+                     id="dropoffLocation"
+                     placeholder="Enter drop-off location or use current location"
+                     />
+                  <button class="btn primary-btn" id="useCurrentLocation" style="margin-top: 15px">
+                  <i class="fas fa-location-arrow"></i> Use Current Location
+                  </button>
+               </div>
+               <div class="modal-actions">
+                  <button class="modal-btn back" id="backToDurationSelection">
+                  Back
+                  </button>
+                  <button class="modal-btn next" id="toReview">Next</button>
+               </div>
+            </div>
+            <div class="step-content" id="reviewSelection">
+               <div id="reviewContent">
+                  <h3>Your Booking Details</h3>
+                  <p id="reviewDate">Date:</p>
+                  <p id="reviewTime">Time:</p>
+                  <p id="reviewDuration">Duration:</p>
+                  <p id="reviewLocation">Location:</p>
+                  <p id="reviewProduct">Product:</p>
+                  <p id="reviewPrice">Total Price:</p>
+               </div>
+               <div class="modal-actions">
+                  <button class="modal-btn back" id="backToLocationSelection">
+                  Back
+                  </button>
+                  <button class="modal-btn complete" id="completeBooking">
+                  Add to Cart
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="modal-overlay" id="loginRequiredModal" style="display: none">
+         <div class="booking-modal">
+            <button class="close-modal" id="closeLoginModal">&times;</button>
+            <div class="login-required">
+               <h3>Login Required</h3>
+               <p>
+                  You need to be logged in to proceed to checkout. Please login or
+                  create an account to continue.
+               </p>
+               <div class="login-required-buttons">
+                  <button class="btn primary-btn" id="goToLogin">Login</button>
+                  <button class="btn secondary-btn" id="goToSignup">Sign Up</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="cookies-alert" id="cookiesAlert">
+         <div class="cookies-content">
+            <h3 class="cookies-title">We Use Cookies</h3>
+            <p class="cookies-text">
+               We use cookies to improve your experience on our website. By clicking
+               "Accept", you agree to the use of cookies for marketing and analytics
+               purposes.
+            </p>
+         </div>
+         <div class="cookies-buttons">
+            <button class="cookies-btn accept" id="acceptCookies">Accept</button>
+            <button class="cookies-btn decline" id="declineCookies">Decline</button>
+         </div>
+      </div>
+      <script src="assets/js/home.js"></script>
+   </body>
+</html>

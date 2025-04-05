@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Booking - Gridcycle</title>
+    <link rel="icon" href="assets/img/favico.ico" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/booking.css" />
+    <link rel="stylesheet" href="assets/css/cart.css"/>
+    
+  </head>
+  <body>
+    <nav id="navbar">
+      <div class="nav-wrapper">
+        <div class="logo">
+          <a href="index.html"><img src="assets/img/logo.png" alt="Logo" /></a>
+        </div>
+        <div class="nav-content-right">
+          <ul id="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="booking.html" class="active">Booking</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <div class="mobile-nav-buttons">
+                <a href="cart.html" class="nav-btn cart-btn">
+                  <img src="assets/img/icons/cart.png" alt="Cart" class="btn-icon" />
+                  <span>Cart</span>
+                  <span class="cart-count" id="mobileCartCount">0</span>
+                </a>
+                <a href="login.html" class="nav-btn login-btn">
+                  <img src="assets/img/icons/user.png" alt="Login" class="btn-icon" />
+                  <span>Login</span>
+                </a>
+              </div>    
+          </ul>
+          <div class="nav-buttons">
+            <a href="cart.html" class="nav-btn cart-btn">
+              <img src="assets/img/icons/cart.png" alt="Cart" class="btn-icon" />
+              <span>Cart</span>
+              <span class="cart-count" id="cartCount">0</span>
+            </a>
+            <a href="login.html" class="nav-btn login-btn">
+              <img src="assets/img/icons/user.png" alt="Login" class="btn-icon" />
+              <span>Login</span>
+            </a>
+          </div>
+          <div id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="cart-page">
+      <div class="booking-header">
+        <h1>Book Your Ride</h1>
+        <p>Choose from our premium selection of eco-friendly bikes</p>
+      </div>
+
+      <div class="products-grid" id="productsGrid">
+        
+      </div>
+    </main>
+
+    
+    <div class="modal-overlay" id="bookingModal">
+      <div class="booking-modal">
+        <button class="close-modal" id="closeModal">&times;</button>
+        <div class="modal-header">
+          <h2>Book Your E-Bike</h2>
+        </div>
+
+        <div class="booking-steps">
+          <div class="step active" id="step1">
+            <div class="step-number">1</div>
+            <div class="step-title">Select Date</div>
+          </div>
+          <div class="step" id="step2">
+            <div class="step-number">2</div>
+            <div class="step-title">Select Time</div>
+          </div>
+          <div class="step" id="step3">
+            <div class="step-number">3</div>
+            <div class="step-title">Duration</div>
+          </div>
+          <div class="step" id="step4">
+            <div class="step-number">4</div>
+            <div class="step-title">Location</div>
+          </div>
+          <div class="step" id="step5">
+            <div class="step-number">5</div>
+            <div class="step-title">Review</div>
+          </div>
+        </div>
+
+        <div class="step-content active" id="dateSelection">
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <h3 class="calendar-title" id="currentMonthYear">June 2023</h3>
+              <div class="calendar-nav">
+                <button id="prevMonth">&lt;</button>
+                <button id="nextMonth">&gt;</button>
+              </div>
+            </div>
+            <div class="calendar-grid" id="calendarDaysHeader">
+              <div class="calendar-day-header">Sun</div>
+              <div class="calendar-day-header">Mon</div>
+              <div class="calendar-day-header">Tue</div>
+              <div class="calendar-day-header">Wed</div>
+              <div class="calendar-day-header">Thu</div>
+              <div class="calendar-day-header">Fri</div>
+              <div class="calendar-day-header">Sat</div>
+            </div>
+            <div class="calendar-grid" id="calendarDates"></div>
+          </div>
+          <div class="modal-actions">
+            <button class="modal-btn back" disabled>Back</button>
+            <button class="modal-btn next" id="toTimeSelection">Next</button>
+          </div>
+        </div>
+
+        <div class="step-content" id="timeSelection">
+          <div class="time-slots-container">
+            <h3 class="time-slots-header">Select Time Slot</h3>
+            <div class="time-slots-grid" id="timeSlots"></div>
+          </div>
+          <div class="modal-actions">
+            <button class="modal-btn back" id="backToDateSelection">Back</button>
+            <button class="modal-btn next" id="toDurationSelection">Next</button>
+          </div>
+        </div>
+
+        <div class="step-content" id="durationSelection">
+          <div class="duration-container">
+            <h3 class="duration-header">Select Rental Duration</h3>
+            <div class="duration-options">
+                <div class="duration-option" data-hours="1">1 hour</div>
+                <div class="duration-option" data-hours="2">2 hours</div>
+                <div class="duration-option" data-hours="4">4 hours</div>
+                <div class="duration-option" data-hours="8">8 hours</div>
+                <div class="duration-option" data-hours="24">1 day</div>
+                <div class="duration-option" data-hours="48">2 days</div>
+                <div class="duration-option" data-hours="72">3 days</div>
+                <div class="duration-option" data-hours="168">1 week</div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="modal-btn back" id="backToTimeSelection">Back</button>
+            <button class="modal-btn next" id="toLocationSelection">Next</button>
+          </div>
+        </div>
+
+        <div class="step-content" id="locationSelection">
+          <div class="location-container">
+            <h3 class="location-header">Select Drop-off Location</h3>
+            <input
+              type="text"
+              class="location-input"
+              id="dropoffLocation"
+              placeholder="Enter drop-off location or use current location"
+            />
+            <button class="btn btn-primary" id="useCurrentLocation" style="margin-top: 15px">
+              <i class="fas fa-location-arrow"></i> Use Current Location
+            </button>
+          </div>
+          <div class="modal-actions">
+            <button class="modal-btn back" id="backToDurationSelection">Back</button>
+            <button class="modal-btn next" id="toReview">Next</button>
+          </div>
+        </div>
+
+        <div class="step-content" id="reviewSelection">
+          <div id="reviewContent">
+            <h3>Your Booking Details</h3>
+            <p class="review-details"><strong>Date:</strong> <span id="reviewDate"></span></p>
+            <p class="review-details"><strong>Time:</strong> <span id="reviewTime"></span></p>
+            <p class="review-details"><strong>Duration:</strong> <span id="reviewDuration"></span></p>
+            <p class="review-details"><strong>Location:</strong> <span id="reviewLocation"></span></p>
+            <p class="review-details"><strong>Product:</strong> <span id="reviewProduct"></span></p>
+            <p class="review-details"><strong>Total Price:</strong> <span id="reviewPrice"></span></p>
+          </div>
+          <div class="modal-actions">
+            <button class="modal-btn back" id="backToLocationSelection">Back</button>
+            <button class="modal-btn complete" id="completeBooking">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="toast" id="toast">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="toastMessage">Please select a bike, date and time</span>
+    </div>
+
+<section class="cta-section">
+    <div class="cta-container">
+      <div class="cta-card">
+        <h2 class="cta-heading">Try Gridcycle's EV Ride Today</h2>
+        <p class="cta-text">
+          Experience the future of transportation with Gridcycle's electric cycles. 
+          Enjoy a smooth, eco-friendly ride and discover the convenience of our rental services.
+        </p>
+        
+        <div class="cta-buttons">
+          <button class="btn cta-btn-white">
+            <i class="fas fa-calendar-check"></i> Book Free Demo
+          </button>
+          <button class="btn cta-btn-green">
+            <i class="fas fa-briefcase"></i> Enterprise Solutions
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-left">
+          <div class="footer-logo">
+            <img src="assets/img/logo.png" alt="Gridcycle Logo" />
+          </div>
+          <p class="footer-tagline">Ride Green, Live Clean with GridCycle.</p>
+          <div class="footer-contact">
+            <p>24, St George's Avenue, London E7 8HP</p>
+            <p>Call: +44 7553559944</p>
+            <p>Email: info@gridcycle.com</p>
+          </div>
+        </div>
+        <div class="footer-right">
+          <div class="footer-sitemap">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="booking.html">Services</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="cart.html">Cart</a></li>
+              <li><a href="login.html">Login</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>
+          &copy; 2025 Ayaz Momin - UEL. All rights reserved.</p>
+          <p>Created By &#x2665; Mohmadayaz Momin</p>
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/js/booking.js"></script>
+  </body>
+</html>

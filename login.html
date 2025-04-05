@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Gridcycle</title>
+    <link rel="icon" href="assets/img/favico.ico" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/log-in.css" />
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="loginTab">Login</div>
+        <div class="auth-tab" id="signupTab">Sign Up</div>
+      </div>
+
+      <div class="auth-header">
+        <h1 id="authTitle">Welcome Back</h1>
+        <p id="authSubtitle">Login to access your account</p>
+      </div>
+
+      <div class="auth-content active" id="loginContent">
+        <form class="auth-form" id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              name="password"
+              required
+            />
+          </div>
+          <button type="submit" class="auth-btn">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+          <div class="error-message" id="loginErrorMessage"></div>
+        </form>
+      </div>
+
+      <div class="auth-content" id="signupContent">
+        <form class="auth-form" id="signupForm">
+          <div class="form-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input
+              type="password"
+              id="signupPassword"
+              name="password"
+              required
+              minlength="6"
+            />
+          </div>
+          <div class="form-group">
+            <label for="signupConfirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="signupConfirmPassword"
+              name="confirmPassword"
+              required
+            />
+          </div>
+          <button type="submit" class="auth-btn">
+            <i class="fas fa-user-plus"></i> Create Account
+          </button>
+          <div class="error-message" id="signupErrorMessage"></div>
+          <p class="terms-text">
+            By creating an account, you agree to our ToS & Privacy Policy
+          </p>
+        </form>
+      </div>
+
+      <div class="auth-footer">
+        <p id="authFooterText">
+          Don't have an account? <a href="#" id="toggleAuthLink">Sign up</a>
+        </p>
+      </div>
+    </div>
+
+    <script src="assets/js/login.js"></script>
+  </body>
+</html>
