@@ -18,7 +18,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Navbar Styles */
+
 #navbar {
   position: fixed;
   top: 0;
@@ -167,7 +167,7 @@ body {
   font-weight: 700;
 }
 
-/* Hamburger Menu */
+
 #hamburger {
   display: none;
   cursor: pointer;
@@ -220,7 +220,7 @@ body {
   justify-content: center;
 }
 
-/* Hero Sections - Mobile First */
+
 .hero-section {
   padding: 80px 20px;
   margin-top: 80px;
@@ -378,7 +378,7 @@ body {
   transform: rotate(10deg) scale(1.2);
 }
 
-/* Features Section */
+
 .features-list {
   list-style: none;
   padding-left: 0;
@@ -435,7 +435,7 @@ body {
   color: #555;
 }
 
-/* Products Section */
+
 .products-section {
   padding: 80px 30px;
   background: white;
@@ -533,7 +533,7 @@ body {
   justify-content: center;
 }
 
-/* Modal Styles */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -917,7 +917,7 @@ body {
   background: #34495e;
 }
 
-/* Toast Notifications */
+
 .toast-container {
   position: fixed;
   top: 20px;
@@ -972,7 +972,7 @@ body {
   font-weight: bold;
 }
 
-/* Login Required */
+
 .login-required {
   text-align: center;
   padding: 20px;
@@ -991,7 +991,7 @@ body {
   margin-top: 30px;
 }
 
-/* CTA Section */
+
 .cta-section {
   padding: 100px 30px;
   background: linear-gradient(135deg, white 0%, #e8e8e8 100%);
@@ -1069,7 +1069,7 @@ body {
   min-width: 200px;
 }
 
-/* Footer */
+
 .footer {
   background: white;
   padding: 60px 30px 20px;
@@ -1193,7 +1193,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* Animations */
+
 .animated {
   opacity: 1 !important;
   transform: translateY(0) !important;
@@ -1203,7 +1203,7 @@ body {
   transform: translateX(0) !important;
 }
 
-/* Cookies Alert */
+
 .cookies-alert {
   position: fixed;
   bottom: 20px;
@@ -1274,7 +1274,7 @@ body {
   background: #e0e0e0;
 }
 
-/* Desktop Layout */
+
 @media (min-width: 992px) {
   .hero-section {
     padding: 120px 30px;
@@ -1313,7 +1313,7 @@ body {
     width: auto;
   }
 
-  /* Specific hero layouts */
+  
   .how-it-works .hero-container {
     flex-direction: row;
   }
@@ -1327,7 +1327,7 @@ body {
   }
 }
 
-/* Mobile Menu */
+
 @media (max-width: 768px) {
   #menu {
     position: fixed;
@@ -1378,7 +1378,7 @@ body {
     display: flex;
   }
 
-  /* Adjust hero padding for mobile */
+  
   .hero-section {
     padding: 60px 20px;
   }
@@ -1396,7 +1396,7 @@ body {
   }
 }
 
-/* Smaller Mobile Screens */
+
 @media (max-width: 576px) {
   .hero-section {
     padding: 50px 15px;
@@ -1433,7 +1433,7 @@ body {
   }
 }
 
-/* Reduced Motion */
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
