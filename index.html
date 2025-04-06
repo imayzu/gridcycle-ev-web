@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="mobile-web-app-capable" content="yes">
       <title>Gridcycle - EV Bike Rentals</title>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
@@ -69,7 +69,7 @@
                   eco-friendly alternative to traditional transportation.
                </p>
                <div class="button-group">
-                  <button class="btn primary-btn" id="openBookingModal">
+                  <button class="btn primary-btn" onclick="location.href='booking.html';">
                   <img
                      src="assets/img/icons/reserved.png"
                      alt="Booking"
@@ -250,7 +250,7 @@
                <button
                   class="btn primary-btn product-btn book-now-btn"
                   data-product="Gridcycle Pro"
-                  data-price="15"
+                  data-price="15" id="openBookingModal"
                   >
                Book Now
                </button>
@@ -268,7 +268,7 @@
                <button
                   class="btn primary-btn product-btn book-now-btn"
                   data-product="Gridcycle Lite"
-                  data-price="12"
+                  data-price="12" id="openBookingModal"
                   >
                Book Now
                </button>
@@ -286,7 +286,7 @@
                <button
                   class="btn primary-btn product-btn book-now-btn"
                   data-product="Gridcycle Tour"
-                  data-price="18"
+                  data-price="18" id="openBookingModal"
                   >
                Book Now
                </button>
