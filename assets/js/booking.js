@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const hamburger = document.getElementById("hamburger");
   const menu = document.getElementById("menu");
   const cartCount = document.getElementById("cartCount");
+  const mobileCartCount = document.getElementById("mobileCartCount");
   const toast = document.getElementById("toast");
   const toastMessage = document.getElementById("toastMessage");
 
@@ -550,7 +551,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateCartCount() {
-    cartCount.textContent = cart.length;
+    const count = cart.length;
+    cartCount.textContent = count;
+    if (mobileCartCount) {
+      mobileCartCount.textContent = count;
+    }
   }
 
   function showToast(message, type = "error") {
