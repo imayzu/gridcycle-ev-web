@@ -531,12 +531,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const formattedDate = selectedDate.toLocaleDateString("en-US", options);
     const hours = parseInt(selectedDuration);
     const totalPrice = (selectedPrice * hours).toFixed(2);
-    reviewDate.textContent = formattedDate;
-    reviewTime.textContent = selectedTime;
-    reviewDuration.textContent = `${hours} ${hours === 1 ? "hour" : "hours"}`;
-    reviewLocation.textContent = selectedLocation;
-    reviewProduct.textContent = selectedProduct;
-    reviewPrice.textContent = `£${totalPrice}`;
+
+    
+    reviewDate.textContent = `Date: ${formattedDate}`;
+    reviewTime.textContent = `Time: ${selectedTime}`;
+    reviewDuration.textContent = `Duration: ${hours} ${
+      hours === 1 ? "hour" : "hours"
+    }`;
+    reviewLocation.textContent = `Location: ${selectedLocation}`;
+    reviewProduct.textContent = `Product: ${selectedProduct}`;
+    reviewPrice.textContent = `Total Price: £${totalPrice}`;
   }
 
   function resetBookingModal() {
