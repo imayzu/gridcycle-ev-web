@@ -36,7 +36,7 @@
 
 - **Eco-Friendly**: Showcases sustainable transportation options.
 - **Educational**: A fun way to dive into frontend development.
-- **Open Source**: Welcomes contributions to grow the EV community.
+
 
 ## Features ✨
 
@@ -57,3 +57,14 @@
    ```bash
    git clone https://github.com/imayzu/gridcycle-ev-web.git
    ```
+## Contributing 🤝
+Want to contribute? Awesome! Here’s how:
+1. Email me at [ayazmomin39@icloud.com] with your idea or contribution.
+2. Fork the repo and create a branch for your changes.
+3. Submit a pull request with a clear description of what you’ve done.
+Please make sure any assets you add come with proper credits!
+
+## Credits ✨
+A huge thanks to the following contributors and asset creators:
+- Flaticon & Fontawesome for icons. 
+- This Project is Developed by Ayaz Momin 💖
