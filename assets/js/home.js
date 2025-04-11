@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  
   const navbar = document.getElementById("navbar");
   const hamburger = document.getElementById("hamburger");
   const menu = document.getElementById("menu");
@@ -56,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const acceptCookies = document.getElementById("acceptCookies");
   const declineCookies = document.getElementById("declineCookies");
 
-  
   let selectedDate = null;
   let selectedTime = null;
   let selectedDuration = null;
@@ -68,6 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   let isLoggedIn = false;
   let lastGeocodeCall = 0;
+  let geocodingCache = JSON.parse(localStorage.getItem("geocodingCache")) || {};
+  const CACHE_EXPIRY_DAYS = 7;
 
   init();
 
@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
         : "";
     });
 
-    
     if (/Mobi|Android/i.test(navigator.userAgent)) {
       window.addEventListener("pageshow", updateCartCount);
       useCurrentLocation.addEventListener("touchend", function (e) {
@@ -124,14 +123,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     initAnimations();
-    const heroSections = document.querySelectorAll(".hero-section");
-    heroSections.forEach((section, index) => {
-      setTimeout(() => {
-        section.style.opacity = "1";
-        section.style.transform = "translateY(0)";
-      }, index * 300 + 200);
-    });
-
     setupBookingModal();
     updateCartCount();
 
@@ -368,7 +359,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    
     useCurrentLocation.addEventListener("click", async function () {
       if (!navigator.geolocation) {
         showToast("Geolocation is not supported by your browser", "error");
@@ -459,20 +449,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const today = new Date();
     let calendarHTML = "";
     for (let i = 0; i < firstDay; i++) {
-      calendarHTML += `<div class="calendar-day disabled"></div>`;
+      calendarHTML += '<div class="calendar-day disabled"></div>';
     }
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const isToday =
-        date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
+      const isToday = date.toDateString() === today.toDateString();
       const isPast = date < today && !isToday;
       const isSelected =
-        selectedDate &&
-        date.getDate() === selectedDate.getDate() &&
-        date.getMonth() === selectedDate.getMonth() &&
-        date.getFullYear() === selectedDate.getFullYear();
+        selectedDate && date.toDateString() === selectedDate.toDateString();
       let dayClass = "calendar-day";
       if (isToday) dayClass += " today";
       if (isPast) dayClass += " disabled";
@@ -497,10 +481,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const timeSlotsHTML = [];
     const startHour = 8;
     const endHour = 20;
+    const now = new Date();
     for (let hour = startHour; hour <= endHour; hour++) {
       const timeLabel = `${hour}:00 - ${hour + 1}:00`;
       const isSelected = selectedTime === timeLabel;
-      const isPast = isTimeSlotInPast(hour);
+      const slotTime = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        hour
+      );
+      const isPast = slotTime < now;
       let slotClass = "time-slot";
       if (isSelected) slotClass += " selected";
       if (isPast) slotClass += " disabled";
@@ -520,18 +511,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function isTimeSlotInPast(hour) {
-    if (!selectedDate) return true;
-    const now = new Date();
-    const selectedDateTime = new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
-      hour
-    );
-    return selectedDateTime < now;
-  }
-
   function updateReviewDetails() {
     if (
       !selectedDate ||
@@ -540,8 +519,9 @@ document.addEventListener("DOMContentLoaded", function () {
       !selectedLocation ||
       !selectedProduct ||
       !selectedPrice
-    )
+    ) {
       return;
+    }
     const options = {
       weekday: "long",
       year: "numeric",
@@ -551,11 +531,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const formattedDate = selectedDate.toLocaleDateString("en-US", options);
     const hours = parseInt(selectedDuration);
     const totalPrice = (selectedPrice * hours).toFixed(2);
-    reviewDate.textContent = `${formattedDate}`;
-    reviewTime.textContent = `${selectedTime}`;
+    reviewDate.textContent = formattedDate;
+    reviewTime.textContent = selectedTime;
     reviewDuration.textContent = `${hours} ${hours === 1 ? "hour" : "hours"}`;
-    reviewLocation.textContent = `${selectedLocation}`;
-    reviewProduct.textContent = `${selectedProduct}`;
+    reviewLocation.textContent = selectedLocation;
+    reviewProduct.textContent = selectedProduct;
     reviewPrice.textContent = `£${totalPrice}`;
   }
 
@@ -595,7 +575,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function getAddressFromCoordinates(lat, lon) {
-    
+    const cacheKey = `${lat.toFixed(4)}|${lon.toFixed(4)}`;
+
+    const cachedResult = geocodingCache[cacheKey];
+    if (cachedResult && !isCacheExpired(cachedResult.timestamp)) {
+      return cachedResult.address;
+    }
+
     const now = Date.now();
     if (now - lastGeocodeCall < 1000) {
       await new Promise((resolve) =>
@@ -606,10 +592,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`,
         {
           headers: {
-            "Accept-Language": "en-US",
+            "Accept-Language": "en-GB",
             Referer: window.location.href,
           },
         }
@@ -619,21 +605,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const data = await response.json();
       const address = data.address || {};
+
       const addressParts = [
-        address.road,
         address.house_number,
-        address.city,
-        address.postcode,
-      ].filter(Boolean);
+        address.road,
+        `${address.city || address.town || address.village || ""} ${
+          address.postcode || ""
+        }`.trim(),
+        address.country,
+      ].filter((part) => part && part.trim() !== "");
+
+      const formattedAddress = addressParts.join(", ");
+
+      geocodingCache[cacheKey] = {
+        address: formattedAddress,
+        timestamp: Date.now(),
+      };
+      saveGeocodingCache();
 
       return (
-        addressParts.join(", ") ||
+        formattedAddress ||
         `Current Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`
       );
     } catch (error) {
       console.error("Address lookup failed:", error);
+
+      if (cachedResult) {
+        return cachedResult.address;
+      }
+
       return `Current Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
     }
+  }
+
+  function isCacheExpired(timestamp) {
+    const now = Date.now();
+    const expiryTime = CACHE_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
+    return now - timestamp > expiryTime;
+  }
+
+  function saveGeocodingCache() {
+    for (const key in geocodingCache) {
+      if (isCacheExpired(geocodingCache[key].timestamp)) {
+        delete geocodingCache[key];
+      }
+    }
+    localStorage.setItem("geocodingCache", JSON.stringify(geocodingCache));
   }
 
   function showToast(message, type = "info") {

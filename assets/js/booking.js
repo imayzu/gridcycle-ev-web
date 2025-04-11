@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const mobileCartCount = document.getElementById("mobileCartCount");
   const toast = document.getElementById("toast");
   const toastMessage = document.getElementById("toastMessage");
-
   const bookingModal = document.getElementById("bookingModal");
   const closeModal = document.getElementById("closeModal");
 
@@ -64,6 +63,10 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentMonth = new Date().getMonth();
   let currentYear = new Date().getFullYear();
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let geolocationWatchId = null;
+
+  let geocodingCache = JSON.parse(localStorage.getItem("geocodingCache")) || {};
+  const CACHE_EXPIRY_DAYS = 7;
 
   const products = [
     {
@@ -110,9 +113,12 @@ document.addEventListener("DOMContentLoaded", function () {
   init();
 
   function init() {
-    window.addEventListener("scroll", function () {
-      navbar.classList.toggle("scrolled", window.scrollY > 10);
-    });
+    window.addEventListener(
+      "scroll",
+      throttle(function () {
+        navbar.classList.toggle("scrolled", window.scrollY > 10);
+      }, 100)
+    );
 
     hamburger.addEventListener("click", function () {
       this.classList.toggle("active");
@@ -122,10 +128,46 @@ document.addEventListener("DOMContentLoaded", function () {
         : "";
     });
 
+    document.querySelectorAll("#menu a").forEach((link) => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        menu.classList.remove("active");
+        document.body.style.overflow = "";
+      });
+    });
+
     renderProducts();
     updateCartCount();
     setupEventListeners();
     generateCalendar(currentMonth, currentYear);
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === "cart") {
+        cart = JSON.parse(e.newValue) || [];
+        updateCartCount();
+      }
+    });
+  }
+
+  function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+    return function () {
+      const context = this;
+      const args = arguments;
+      if (!lastRan) {
+        func.apply(context, args);
+        lastRan = Date.now();
+      } else {
+        clearTimeout(lastFunc);
+        lastFunc = setTimeout(function () {
+          if (Date.now() - lastRan >= limit) {
+            func.apply(context, args);
+            lastRan = Date.now();
+          }
+        }, limit - (Date.now() - lastRan));
+      }
+    };
   }
 
   function renderProducts() {
@@ -136,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
       html += `
         <div class="product-card">
           <div class="product-image">
-            <img src="${product.image}" alt="${product.name}" />
+            <img src="${product.image}" alt="${product.name}" loading="lazy" />
           </div>
           <div class="product-info">
             <h3 class="product-title">${product.name}</h3>
@@ -195,20 +237,12 @@ document.addEventListener("DOMContentLoaded", function () {
         showToast("Please select a date", "error");
         return;
       }
-      step1.classList.remove("active");
-      step1.classList.add("completed");
-      step2.classList.add("active");
-      dateSelection.classList.remove("active");
-      timeSelection.classList.add("active");
+      navigateToStep(2);
       generateTimeSlots();
     });
 
     backToDateSelection.addEventListener("click", function () {
-      step1.classList.add("active");
-      step1.classList.remove("completed");
-      step2.classList.remove("active");
-      dateSelection.classList.add("active");
-      timeSelection.classList.remove("active");
+      navigateToStep(1);
     });
 
     toDurationSelection.addEventListener("click", function () {
@@ -216,19 +250,11 @@ document.addEventListener("DOMContentLoaded", function () {
         showToast("Please select a time slot", "error");
         return;
       }
-      step2.classList.remove("active");
-      step2.classList.add("completed");
-      step3.classList.add("active");
-      timeSelection.classList.remove("active");
-      durationSelection.classList.add("active");
+      navigateToStep(3);
     });
 
     backToTimeSelection.addEventListener("click", function () {
-      step2.classList.add("active");
-      step2.classList.remove("completed");
-      step3.classList.remove("active");
-      timeSelection.classList.add("active");
-      durationSelection.classList.remove("active");
+      navigateToStep(2);
     });
 
     toLocationSelection.addEventListener("click", function () {
@@ -236,19 +262,11 @@ document.addEventListener("DOMContentLoaded", function () {
         showToast("Please select a duration", "error");
         return;
       }
-      step3.classList.remove("active");
-      step3.classList.add("completed");
-      step4.classList.add("active");
-      durationSelection.classList.remove("active");
-      locationSelection.classList.add("active");
+      navigateToStep(4);
     });
 
     backToDurationSelection.addEventListener("click", function () {
-      step3.classList.add("active");
-      step3.classList.remove("completed");
-      step4.classList.remove("active");
-      durationSelection.classList.add("active");
-      locationSelection.classList.remove("active");
+      navigateToStep(3);
     });
 
     toReview.addEventListener("click", function () {
@@ -257,20 +275,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
       selectedLocation = dropoffLocation.value;
-      step4.classList.remove("active");
-      step4.classList.add("completed");
-      step5.classList.add("active");
-      locationSelection.classList.remove("active");
-      reviewSelection.classList.add("active");
+      navigateToStep(5);
       updateReviewDetails();
     });
 
     backToLocationSelection.addEventListener("click", function () {
-      step4.classList.add("active");
-      step4.classList.remove("completed");
-      step5.classList.remove("active");
-      locationSelection.classList.add("active");
-      reviewSelection.classList.remove("active");
+      navigateToStep(4);
     });
 
     completeBooking.addEventListener("click", function () {
@@ -300,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       cart.push(booking);
-      localStorage.setItem("cart", JSON.stringify(cart));
+      saveCart();
       updateCartCount();
 
       closeBookingModal();
@@ -318,56 +328,27 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     useCurrentLocation.addEventListener("click", function () {
-      const originalHTML = this.innerHTML;
+      getCurrentLocation();
+    });
 
-      if (navigator.geolocation) {
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
-        this.disabled = true;
-
-        const timeout = setTimeout(() => {
-          showToast("Location service is taking longer than usual", "info");
-        }, 6000);
-
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            clearTimeout(timeout);
-            const { latitude, longitude } = position.coords;
-            dropoffLocation.value = `Current Location (${latitude.toFixed(
-              4
-            )}, ${longitude.toFixed(4)})`;
-            showToast("Current location set", "success");
-            this.innerHTML = originalHTML;
-            this.disabled = false;
-          },
-          (error) => {
-            clearTimeout(timeout);
-            let errorMessage = "Unable to get your location";
-            switch (error.code) {
-              case error.PERMISSION_DENIED:
-                errorMessage = "Location access was denied";
-                break;
-              case error.POSITION_UNAVAILABLE:
-                errorMessage = "Location information unavailable";
-                break;
-              case error.TIMEOUT:
-                errorMessage = "Location request timed out";
-                break;
-            }
-            showToast(errorMessage, "error");
-            console.error("Geolocation error:", error);
-            this.innerHTML = originalHTML;
-            this.disabled = false;
-          },
-          {
-            enableHighAccuracy: true,
-            maximumAge: 30000,
-            timeout: 10000,
-          }
-        );
-      } else {
-        showToast("Geolocation is not supported by your browser", "error");
+    bookingModal.addEventListener("click", function (e) {
+      if (e.target === bookingModal) {
+        closeBookingModal();
       }
     });
+  }
+
+  function navigateToStep(step) {
+    [step1, step2, step3, step4, step5].forEach((s, i) => {
+      s.classList.toggle("active", i + 1 === step);
+      s.classList.toggle("completed", i + 1 < step);
+    });
+
+    dateSelection.classList.toggle("active", step === 1);
+    timeSelection.classList.toggle("active", step === 2);
+    durationSelection.classList.toggle("active", step === 3);
+    locationSelection.classList.toggle("active", step === 4);
+    reviewSelection.classList.toggle("active", step === 5);
   }
 
   function generateCalendar(month, year) {
@@ -400,16 +381,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const isToday =
-        date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
+      const isToday = date.toDateString() === today.toDateString();
       const isPast = date < today && !isToday;
       const isSelected =
-        selectedDate &&
-        date.getDate() === selectedDate.getDate() &&
-        date.getMonth() === selectedDate.getMonth() &&
-        date.getFullYear() === selectedDate.getFullYear();
+        selectedDate && date.toDateString() === selectedDate.toDateString();
 
       let dayClass = "calendar-day";
       if (isToday) dayClass += " today";
@@ -440,11 +415,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const timeSlotsHTML = [];
     const startHour = 8;
     const endHour = 20;
+    const now = new Date();
 
     for (let hour = startHour; hour <= endHour; hour++) {
       const timeLabel = `${hour}:00 - ${hour + 1}:00`;
       const isSelected = selectedTime === timeLabel;
-      const isPast = isTimeSlotInPast(hour);
+      const slotTime = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        hour
+      );
+      const isPast = slotTime < now;
 
       let slotClass = "time-slot";
       if (isSelected) slotClass += " selected";
@@ -467,20 +449,6 @@ document.addEventListener("DOMContentLoaded", function () {
         this.classList.add("selected");
       });
     });
-  }
-
-  function isTimeSlotInPast(hour) {
-    if (!selectedDate) return true;
-
-    const now = new Date();
-    const selectedDateTime = new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
-      hour
-    );
-
-    return selectedDateTime < now;
   }
 
   function updateReviewDetails() {
@@ -521,25 +489,17 @@ document.addEventListener("DOMContentLoaded", function () {
   function closeBookingModal() {
     bookingModal.classList.remove("active");
     document.body.style.overflow = "";
+
+    if (geolocationWatchId !== null) {
+      navigator.geolocation.clearWatch(geolocationWatchId);
+      geolocationWatchId = null;
+    }
+
+    saveGeocodingCache();
   }
 
   function resetBookingModal() {
-    step1.classList.add("active");
-    step1.classList.remove("completed");
-    step2.classList.remove("active");
-    step2.classList.remove("completed");
-    step3.classList.remove("active");
-    step3.classList.remove("completed");
-    step4.classList.remove("active");
-    step4.classList.remove("completed");
-    step5.classList.remove("active");
-
-    dateSelection.classList.add("active");
-    timeSelection.classList.remove("active");
-    durationSelection.classList.remove("active");
-    locationSelection.classList.remove("active");
-    reviewSelection.classList.remove("active");
-
+    navigateToStep(1);
     selectedDate = null;
     selectedTime = null;
     selectedDuration = null;
@@ -558,6 +518,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    const event = new StorageEvent("storage", {
+      key: "cart",
+      newValue: JSON.stringify(cart),
+    });
+    window.dispatchEvent(event);
+  }
+
   function showToast(message, type = "error") {
     toastMessage.textContent = message;
     toast.className = "toast";
@@ -567,5 +537,162 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(() => {
       toast.classList.remove("show");
     }, 3000);
+  }
+
+  function getCurrentLocation() {
+    const originalHTML = useCurrentLocation.innerHTML;
+
+    if (!navigator.geolocation) {
+      showToast("Geolocation is not supported by your browser", "error");
+      return;
+    }
+
+    if (geolocationWatchId !== null) {
+      navigator.geolocation.clearWatch(geolocationWatchId);
+    }
+
+    useCurrentLocation.innerHTML =
+      '<i class="fas fa-spinner fa-spin"></i> Locating...';
+    useCurrentLocation.disabled = true;
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    };
+
+    const timeout = setTimeout(() => {
+      showToast("Location service is taking longer than usual", "info");
+      useCurrentLocation.innerHTML = originalHTML;
+      useCurrentLocation.disabled = false;
+    }, 10000);
+
+    geolocationWatchId = navigator.geolocation.watchPosition(
+      (position) => {
+        clearTimeout(timeout);
+        if (geolocationWatchId !== null) {
+          navigator.geolocation.clearWatch(geolocationWatchId);
+          geolocationWatchId = null;
+        }
+
+        const { latitude, longitude } = position.coords;
+        reverseGeocodeWithNominatim(latitude, longitude)
+          .then((address) => {
+            dropoffLocation.value = address;
+            showToast("Current location set", "success");
+          })
+          .catch((error) => {
+            console.error("Geocoding error:", error);
+            dropoffLocation.value = `Current Location (${latitude.toFixed(
+              4
+            )}, ${longitude.toFixed(4)})`;
+            showToast("Location set (exact address not available)", "info");
+          })
+          .finally(() => {
+            useCurrentLocation.innerHTML = originalHTML;
+            useCurrentLocation.disabled = false;
+          });
+      },
+      (error) => {
+        clearTimeout(timeout);
+        if (geolocationWatchId !== null) {
+          navigator.geolocation.clearWatch(geolocationWatchId);
+          geolocationWatchId = null;
+        }
+
+        let errorMessage = "Unable to get your location";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage =
+              "Location access was denied. Please check your browser settings.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information is unavailable";
+            break;
+          case error.TIMEOUT:
+            errorMessage =
+              "Location request timed out. Please try again in an open area.";
+            break;
+        }
+        showToast(errorMessage, "error");
+        console.error("Geolocation error:", error);
+        useCurrentLocation.innerHTML = originalHTML;
+        useCurrentLocation.disabled = false;
+      },
+      options
+    );
+  }
+
+  async function reverseGeocodeWithNominatim(latitude, longitude) {
+    const cacheKey = `${latitude.toFixed(4)}|${longitude.toFixed(4)}`;
+
+    const cachedResult = geocodingCache[cacheKey];
+    if (cachedResult && !isCacheExpired(cachedResult.timestamp)) {
+      return cachedResult.address;
+    }
+
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&addressdetails=1`;
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Nominatim API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      const address = data.address;
+      const parts = [];
+
+      if (address.house_number) parts.push(address.house_number);
+      if (address.road) parts.push(address.road);
+
+      const cityParts = [];
+      if (address.city || address.town || address.village) {
+        cityParts.push(address.city || address.town || address.village);
+      }
+      if (address.postcode) cityParts.push(address.postcode);
+
+      if (cityParts.length > 0) {
+        parts.push(cityParts.join(" "));
+      }
+
+      if (address.country) parts.push(address.country);
+
+      const formattedAddress = parts.join(", ");
+
+      geocodingCache[cacheKey] = {
+        address: formattedAddress,
+        timestamp: Date.now(),
+      };
+      saveGeocodingCache();
+
+      return formattedAddress;
+    } catch (error) {
+      console.error("Nominatim geocoding failed:", error);
+
+      if (cachedResult) {
+        return cachedResult.address;
+      }
+
+      throw error;
+    }
+  }
+
+  function isCacheExpired(timestamp) {
+    const now = Date.now();
+    const expiryTime = CACHE_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
+    return now - timestamp > expiryTime;
+  }
+
+  function saveGeocodingCache() {
+    for (const key in geocodingCache) {
+      if (isCacheExpired(geocodingCache[key].timestamp)) {
+        delete geocodingCache[key];
+      }
+    }
+    localStorage.setItem("geocodingCache", JSON.stringify(geocodingCache));
   }
 });
