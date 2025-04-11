@@ -8,13 +8,13 @@
   <a href="https://github.com/imayzu/gridcycle-ev-web/stargazers"><img src="https://img.shields.io/github/stars/imayzu/gridcycle-ev-web?style=social" alt="GitHub stars"></a>
   <a href="https://github.com/imayzu/gridcycle-ev-web/issues"><img src="https://img.shields.io/github/issues/imayzu/gridcycle-ev-web?style=social" alt="GitHub issues"></a>
   <a href="https://img.shields.io/badge/License-Academic-blue.svg"><img src="https://img.shields.io/badge/License-Academic-blue.svg" alt="Academic License"></a>
+  <a href="https://gridcycle-ev-web.netlify.app/">
+    <img src="https://api.netlify.com/api/v1/badges/c8794b31-f92b-4a93-961c-51aee24bcd3b/deploy-status" alt="Netlify Status">
+  </a>
 </p>
 
 <p align="center">
-  <strong>A sleek web app for exploring electric vehicles, built with HTML, CSS, and JavaScript.</strong><br>
-   <a href="https://gridcycle-ev-web.netlify.app/">
-    <img src="https://api.netlify.com/api/v1/badges/c8794b31-f92b-4a93-961c-51aee24bcd3b/deploy-status" alt="Netlify Status">
-  </a>
+  <strong>A sleek web app for exploring electric vehicles, built with HTML, CSS, and JavaScript.</strong>
 </p>
 
 ---
