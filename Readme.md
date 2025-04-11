@@ -1,3 +1,6 @@
+[![GitHub License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Open Issues](https://img.shields.io/github/issues-raw/yourusername/repo)](https://github.com/imayzu/gridcycle-ev-web/issues)
+[![Website Status](https://img.shields.io/website?url=https%3A%2F%your-live-demo.com)](https://gridcycle-ev-web.netlify.app/)
 ⚡ EcoRide EV Rentals
 
 A modern web platform for electric vehicle rentals - College Web Development Project
@@ -17,4 +20,4 @@ Tech Stack:
 - APIs: Browser Geolocation, Nominatiam 
 
 
-Live Demo: https://gridcycle-ev-web.netlify.app/
+
