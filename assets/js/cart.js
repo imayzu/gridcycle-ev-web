@@ -1,10 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-  
   const navbar = document.getElementById("navbar");
   const hamburger = document.getElementById("hamburger");
   const menu = document.getElementById("menu");
-
-  
   const cartItems = document.getElementById("cartItems");
   const cartSummary = document.getElementById("cartSummary");
   const subtotal = document.getElementById("subtotal");
@@ -48,36 +45,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
     loadCartItems();
-
-    
     updateCartCount();
-
-    
     emptyCartBtn.addEventListener("click", emptyCart);
     checkoutBtn.addEventListener("click", handleCheckout);
+
+    
+    window.addEventListener("storage", handleStorageChange);
+  }
+
+  
+  function handleStorageChange(e) {
+    if (e.key === "cart") {
+      cart = JSON.parse(e.newValue) || [];
+      loadCartItems();
+      updateCartCount();
+    }
   }
 
   function loadCartItems() {
     if (cart.length === 0) {
       cartItems.innerHTML = `
-          <div class="empty-cart">
-            <i class="fas fa-shopping-cart"></i>
-            <h3>Your cart is empty</h3>
-            <p>You haven't added any items to your cart yet</p>
-            <a href="booking.html" class="btn btn-primary">
-               Book a Ride Now
-            </a>
-          </div>
-        `;
+        <div class="empty-cart">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>Your cart is empty</h3>
+          <p>You haven't added any items to your cart yet</p>
+          <a href="booking.html" class="btn btn-primary">
+            Book a Ride Now
+          </a>
+        </div>
+      `;
       cartSummary.style.display = "none";
       return;
     }
 
-    
     let itemsHTML = "";
     let calculatedSubtotal = 0;
 
-    
     const productImages = {
       "Gridcycle Pro": "assets/img/products/product-1.png",
       "Gridcycle Lite": "assets/img/products/product-2.png",
@@ -96,39 +99,37 @@ document.addEventListener("DOMContentLoaded", function () {
       calculatedSubtotal += item.price;
 
       itemsHTML += `
-          <div class="cart-item" data-index="${index}">
-            <div class="cart-item-details">
-              <div class="cart-item-image">
-                <img src="${
-                  productImages[item.product] ||
-                  "assets/img/product/product1.png"
-                }" alt="${item.product}" />
-              </div>
-              <div class="cart-item-info">
-                <h3>${item.product}</h3>
-                <p>£${item.price.toFixed(2)} per hour</p>
-                <p class="cart-item-date">${formattedDate} at ${time}</p>
-              </div>
+        <div class="cart-item" data-index="${index}">
+          <div class="cart-item-details">
+            <div class="cart-item-image">
+              <img src="${
+                productImages[item.product] || "assets/img/product/product1.png"
+              }" alt="${item.product}" />
             </div>
-            <div class="cart-item-actions">
-              <div class="cart-item-price">£${item.price.toFixed(2)}</div>
-              <button class="action-btn delete" data-index="${index}">
-                <i class="fas fa-trash"></i> Remove
-              </button>
+            <div class="cart-item-info">
+              <h3>${item.product}</h3>
+              <p>£${item.price.toFixed(2)} per hour</p>
+              <p class="cart-item-date">${formattedDate} at ${time}</p>
             </div>
           </div>
-        `;
+          <div class="cart-item-actions">
+            <div class="cart-item-price">£${item.price.toFixed(2)}</div>
+            <button class="action-btn delete" data-index="${index}">
+              <i class="fas fa-trash"></i> Remove
+            </button>
+          </div>
+        </div>
+      `;
     });
 
     cartItems.innerHTML = itemsHTML;
     cartSummary.style.display = "block";
-
-    
     subtotal.textContent = `£${calculatedSubtotal.toFixed(2)}`;
     total.textContent = `£${(calculatedSubtotal + 2).toFixed(2)}`;
 
     
     updateCartCount();
+    dispatchCartUpdate();
 
     
     document.querySelectorAll(".action-btn.delete").forEach((button) => {
@@ -141,14 +142,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateCartCount() {
     const count = cart.length;
-    cartCount.textContent = count;
-    mobileCartCount.textContent = count;
+    if (cartCount) cartCount.textContent = count;
+    if (mobileCartCount) mobileCartCount.textContent = count;
+
+    
+    document.querySelectorAll(".cart-count").forEach((el) => {
+      el.textContent = count;
+    });
+  }
+
+  function dispatchCartUpdate() {
+    
+    const event = new StorageEvent("storage", {
+      key: "cart",
+      newValue: JSON.stringify(cart),
+    });
+    window.dispatchEvent(event);
   }
 
   function removeFromCart(index) {
     cart.splice(index, 1);
     localStorage.setItem("cart", JSON.stringify(cart));
-    loadCartItems();
 
     
     const itemToRemove = document.querySelector(
@@ -160,6 +174,8 @@ document.addEventListener("DOMContentLoaded", function () {
       setTimeout(() => {
         loadCartItems();
       }, 300);
+    } else {
+      loadCartItems();
     }
   }
 
@@ -167,8 +183,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (confirm("Are you sure you want to empty your cart?")) {
       cart = [];
       localStorage.setItem("cart", JSON.stringify(cart));
+      dispatchCartUpdate();
 
-      
       const items = document.querySelectorAll(".cart-item");
       items.forEach((item, index) => {
         item.style.transitionDelay = `${index * 0.1}s`;
@@ -183,7 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function handleCheckout() {
-    
     if (cart.length === 0) {
       showToast(
         "Your cart is empty. Please add items to proceed to checkout.",
@@ -192,7 +207,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    
     const currentUser =
       JSON.parse(localStorage.getItem("gridcycleCurrentUser")) || null;
     if (!currentUser) {
@@ -200,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    
     showToast("Proceeding to checkout...", "success");
   }
 
