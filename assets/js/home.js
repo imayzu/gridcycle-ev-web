@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
+  
   const navbar = document.getElementById("navbar");
   const hamburger = document.getElementById("hamburger");
   const menu = document.getElementById("menu");
   const cartButton = document.getElementById("cartButton");
   const cartCount = document.getElementById("cartCount");
+  const mobileCartCount = document.getElementById("mobileCartCount");
   const openBookingModal = document.getElementById("openBookingModal");
   const bookingModal = document.getElementById("bookingModal");
   const closeModal = document.getElementById("closeModal");
@@ -54,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const acceptCookies = document.getElementById("acceptCookies");
   const declineCookies = document.getElementById("declineCookies");
 
+  
   let selectedDate = null;
   let selectedTime = null;
   let selectedDuration = null;
@@ -64,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentYear = new Date().getFullYear();
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   let isLoggedIn = false;
+  let lastGeocodeCall = 0;
 
   init();
 
@@ -81,6 +85,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      window.addEventListener("pageshow", updateCartCount);
+      useCurrentLocation.addEventListener("touchend", function (e) {
+        e.preventDefault();
+        this.click();
+      });
+    }
+
     document.querySelectorAll("#menu li a").forEach((link) => {
       link.addEventListener("click", function () {
         if (window.innerWidth <= 768) {
@@ -198,6 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModal.addEventListener("click", function () {
       bookingModal.classList.remove("active");
       document.body.style.overflow = "";
+      resetBookingModal();
     });
 
     cartButton.addEventListener("click", function () {
@@ -215,10 +228,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     goToLogin.addEventListener("click", function () {
       showToast("Redirecting to login page", "info");
+      window.location.href = "login.html";
     });
 
     goToSignup.addEventListener("click", function () {
       showToast("Redirecting to signup page", "info");
+      window.location.href = "login.html#signup";
     });
 
     document.querySelectorAll(".book-now-btn").forEach((button) => {
@@ -330,7 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const totalPrice = (selectedPrice * hours).toFixed(2);
       const booking = {
         product: selectedProduct,
-        date: selectedDate,
+        date: selectedDate.toISOString().split("T")[0],
         time: selectedTime,
         duration: hours,
         location: selectedLocation,
@@ -354,57 +369,53 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     
-    useCurrentLocation.addEventListener("click", function () {
-      if (navigator.geolocation) {
-        
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
-        this.disabled = true;
-
-        
-        const timeout = setTimeout(() => {
-          showToast("Location service is taking longer than usual", "info");
-        }, 6000);
-
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            clearTimeout(timeout);
-            const { latitude, longitude } = position.coords;
-            dropoffLocation.value = `Current Location (${latitude.toFixed(
-              4
-            )}, ${longitude.toFixed(4)})`;
-            showToast("Current location set", "success");
-            this.innerHTML =
-              '<i class="fas fa-location-arrow"></i> Use Current Location';
-            this.disabled = false;
-          },
-          (error) => {
-            clearTimeout(timeout);
-            let errorMessage = "Unable to get your location";
-            switch (error.code) {
-              case error.PERMISSION_DENIED:
-                errorMessage = "Location access was denied";
-                break;
-              case error.POSITION_UNAVAILABLE:
-                errorMessage = "Location information unavailable";
-                break;
-              case error.TIMEOUT:
-                errorMessage = "Location request timed out";
-                break;
-            }
-            showToast(errorMessage, "error");
-            console.error("Geolocation error:", error);
-            this.innerHTML =
-              '<i class="fas fa-location-arrow"></i> Use Current Location';
-            this.disabled = false;
-          },
-          {
-            enableHighAccuracy: true, 
-            maximumAge: 30000, 
-            timeout: 10000, 
-          }
-        );
-      } else {
+    useCurrentLocation.addEventListener("click", async function () {
+      if (!navigator.geolocation) {
         showToast("Geolocation is not supported by your browser", "error");
+        return;
+      }
+
+      const button = this;
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+      button.disabled = true;
+
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: /Mobi|Android/i.test(navigator.userAgent) ? 0 : 30000,
+          });
+        });
+
+        const address = await getAddressFromCoordinates(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+
+        dropoffLocation.value = address;
+        selectedLocation = address;
+        showToast("Location set successfully", "success");
+      } catch (error) {
+        let errorMessage = "Unable to get your location";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage =
+              "Location access was denied. Please enable permissions.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage =
+              "Location information unavailable. Check your connection.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out. Please try again.";
+            break;
+        }
+        showToast(errorMessage, "error");
+      } finally {
+        button.innerHTML = originalHTML;
+        button.disabled = false;
       }
     });
 
@@ -471,8 +482,8 @@ document.addEventListener("DOMContentLoaded", function () {
     calendarDates.innerHTML = calendarHTML;
     document.querySelectorAll(".calendar-day:not(.disabled)").forEach((day) => {
       day.addEventListener("click", function () {
-        const day = parseInt(this.getAttribute("data-day"));
-        selectedDate = new Date(year, month, day);
+        const dayNum = parseInt(this.getAttribute("data-day"));
+        selectedDate = new Date(year, month, dayNum);
         document.querySelectorAll(".calendar-day").forEach((d) => {
           d.classList.remove("selected");
         });
@@ -540,14 +551,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const formattedDate = selectedDate.toLocaleDateString("en-US", options);
     const hours = parseInt(selectedDuration);
     const totalPrice = (selectedPrice * hours).toFixed(2);
-    reviewDate.textContent = `Date: ${formattedDate}`;
-    reviewTime.textContent = `Time: ${selectedTime}`;
-    reviewDuration.textContent = `Duration: ${hours} ${
-      hours === 1 ? "hour" : "hours"
-    }`;
-    reviewLocation.textContent = `Location: ${selectedLocation}`;
-    reviewProduct.textContent = `Product: ${selectedProduct}`;
-    reviewPrice.textContent = `Total Price: £${totalPrice}`;
+    reviewDate.textContent = `${formattedDate}`;
+    reviewTime.textContent = `${selectedTime}`;
+    reviewDuration.textContent = `${hours} ${hours === 1 ? "hour" : "hours"}`;
+    reviewLocation.textContent = `${selectedLocation}`;
+    reviewProduct.textContent = `${selectedProduct}`;
+    reviewPrice.textContent = `£${totalPrice}`;
   }
 
   function resetBookingModal() {
@@ -575,10 +584,59 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateCartCount() {
-    cartCount.textContent = cart.length;
+    const count = cart.length;
+    if (cartCount) cartCount.textContent = count;
+    if (mobileCartCount) mobileCartCount.textContent = count;
+    document.querySelectorAll(".cart-count").forEach((el) => {
+      if (el !== cartCount && el !== mobileCartCount) {
+        el.textContent = count;
+      }
+    });
   }
 
-  function showToast(message, type) {
+  async function getAddressFromCoordinates(lat, lon) {
+    
+    const now = Date.now();
+    if (now - lastGeocodeCall < 1000) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000 - (now - lastGeocodeCall))
+      );
+    }
+    lastGeocodeCall = Date.now();
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
+        {
+          headers: {
+            "Accept-Language": "en-US",
+            Referer: window.location.href,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("API request failed");
+
+      const data = await response.json();
+      const address = data.address || {};
+      const addressParts = [
+        address.road,
+        address.house_number,
+        address.city,
+        address.postcode,
+      ].filter(Boolean);
+
+      return (
+        addressParts.join(", ") ||
+        `Current Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`
+      );
+    } catch (error) {
+      console.error("Address lookup failed:", error);
+      return `Current Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
+    }
+  }
+
+  function showToast(message, type = "info") {
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
     let icon = "";
@@ -599,10 +657,10 @@ document.addEventListener("DOMContentLoaded", function () {
         icon = "";
     }
     toast.innerHTML = `
-          <span class="toast-icon">${icon}</span>
-          <span class="toast-message">${message}</span>
-          <span class="toast-close">×</span>
-      `;
+      <span class="toast-icon">${icon}</span>
+      <span class="toast-message">${message}</span>
+      <span class="toast-close">×</span>
+    `;
     const closeBtn = toast.querySelector(".toast-close");
     closeBtn.addEventListener("click", function () {
       toast.classList.remove("show");
