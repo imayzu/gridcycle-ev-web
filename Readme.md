@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://github.com/imayzu/gridcycle-ev-web/stargazers"><img src="https://img.shields.io/github/stars/imayzu/gridcycle-ev-web?style=social" alt="GitHub stars"></a>
   <a href="https://github.com/imayzu/gridcycle-ev-web/issues"><img src="https://img.shields.io/github/issues/imayzu/gridcycle-ev-web?style=social" alt="GitHub issues"></a>
-  <a href="https://github.com/imayzu/gridcycle-ev-web/blob/main/LICENSE"><img src="https://img.shields.io/github/license/imayzu/gridcycle-ev-web" alt="MIT License"></a>
+  <a href="https://github.com/imayzu/gridcycle-ev-web/blob/master/LICENSE"><img src="https://img.shields.io/github/license/imayzu/gridcycle-ev-web" alt="MIT License"></a>
   <a href="https://img.shields.io/badge/License-Academic-blue.svg"><img src="https://img.shields.io/badge/License-Academic-blue.svg" alt="Academic License"></a>
 </p>
 
