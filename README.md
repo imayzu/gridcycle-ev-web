@@ -12,7 +12,9 @@
 
 <p align="center">
   <strong>A sleek web app for exploring electric vehicles, built with HTML, CSS, and JavaScript.</strong>
-   [![Netlify Status](https://api.netlify.com/api/v1/badges/c8794b31-f92b-4a93-961c-51aee24bcd3b/deploy-status)](https://gridcycle-ev-web.netlify.app/)
+   <a href="https://gridcycle-ev-web.netlify.app/">
+    <img src="https://api.netlify.com/api/v1/badges/c8794b31-f92b-4a93-961c-51aee24bcd3b/deploy-status" alt="Netlify Status">
+  </a>
 </p>
 
 ---
