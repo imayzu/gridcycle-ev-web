@@ -1,0 +1,12 @@
+
+├── assets/                        # Directory for images, styles, and scripts
+│   ├── images/                    # Store images like logos, vehicle models, etc.
+│   ├── css/                    # CSS or other stylesheet files
+│   └── js/                   # JavaScript files for interactive features
+├── about.html                     # About page
+├── booking.html                  # Booking page
+├── cart.html                     # Shopping cart page
+├── contact.html                  # Contact page
+├── index.html                    # Home page
+└── login.html                    # Login page
+

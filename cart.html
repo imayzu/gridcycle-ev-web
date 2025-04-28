@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Your Cart - Gridcycle</title>
+    <link rel="icon" href="assets/img/favico.ico" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/cart.css" />
+  </head>
+  <body>
+    <nav id="navbar">
+      <div class="nav-wrapper">
+        <div class="logo">
+          <a href="index.html"
+            ><img src="assets/img/logo.png" alt="Gridcycle Logo"
+          /></a>
+        </div>
+        <div class="nav-content-right">
+          <ul id="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="booking.html">Booking</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li class="mobile-nav-buttons">
+              <a href="cart.html" class="nav-btn cart-btn">
+                <img
+                  src="assets/img/icons/cart.png"
+                  alt="Cart"
+                  class="btn-icon"
+                />
+                <span>Cart</span>
+                <span class="cart-count" id="mobileCartCount">0</span>
+              </a>
+              <a href="login.html" class="nav-btn login-btn">
+                <img
+                  src="assets/img/icons/user.png"
+                  alt="Login"
+                  class="btn-icon"
+                />
+                <span>Login</span>
+              </a>
+            </li>
+          </ul>
+          <div class="nav-buttons">
+            <a href="cart.html" class="nav-btn cart-btn">
+              <img
+                src="assets/img/icons/cart.png"
+                alt="Cart"
+                class="btn-icon"
+              />
+              <span>Cart</span>
+              <span class="cart-count" id="cartCount">0</span>
+            </a>
+            <a href="login.html" class="nav-btn login-btn">
+              <img
+                src="assets/img/icons/user.png"
+                alt="Login"
+                class="btn-icon"
+              />
+              <span>Login</span>
+            </a>
+          </div>
+          <div id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="cart-page">
+      <div class="cart-header">
+        <h1>Your Cart</h1>
+        <p>Review your selected items before checkout</p>
+      </div>
+
+      <div class="cart-container">
+        <div class="cart-items" id="cartItems">
+          <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Your Cart is Empty</h3>
+            <p>Explore our eco-friendly bikes and book your ride today!</p>
+            <a href="booking.html" class="btn btn-primary">Book a Ride Now</a>
+          </div>
+        </div>
+
+        <div class="cart-summary" id="cartSummary" style="display: none">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="subtotal">£0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Service Fee</span>
+            <span>£2.00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="total">£0.00</span>
+          </div>
+
+          <div class="cart-actions">
+            <a href="booking.html" class="btn btn-outline">
+              <i class="fas fa-arrow-left"></i> Continue Shopping
+            </a>
+            <div class="action-group">
+              <button class="btn btn-danger" id="emptyCart">
+                <i class="fas fa-trash"></i> Empty Cart
+              </button>
+              <button class="btn btn-primary" id="checkout">
+                <i class="fas fa-credit-card"></i> Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <footer class="footer">
+      <div class="footer-container animated">
+        <div class="footer-left">
+          <div class="footer-logo">
+            <img src="assets/img/logo.png" alt="Gridcycle Logo" />
+          </div>
+          <p class="footer-tagline">Ride Green, Live Clean with GridCycle.</p>
+          <div class="footer-contact">
+            <p>24, St George's Avenue, London E7 8HP</p>
+            <p>Call: +44 7553559944</p>
+            <p>Email: info@gridcycle.com</p>
+          </div>
+        </div>
+        <div class="footer-right">
+          <div class="footer-sitemap">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="booking.html">Booking</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="cart.html">Cart</a></li>
+              <li><a href="login.html">Login</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Ayaz Momin - UEL. All rights reserved.</p>
+        <p>Created By ♥ Mohmadayaz Momin</p>
+      </div>
+    </footer>
+
+    <script src="assets/js/cart.js"></script>
+  </body>
+</html>
